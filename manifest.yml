@@ -1,10 +1,10 @@
 ---
 applications:
-- name: hello-boot
+- name: heroku
   memory: 512M
   instances: 1
   services: []
-  host: hello-boot-rags
-  path: ./target/myproject-0.0.1-SNAPSHOT.jar
+  host: heroku-rags
+  path: ./target/heroku-0.0.1-SNAPSHOT.jar
   env:
    JAVA_OPTS: -Drebel.remoting_plugin=true
