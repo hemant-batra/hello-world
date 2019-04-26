@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 @Data
 public class ElementDTO {
     private String id;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd MMM yyyy HH:mm:ss", timezone = "Asia/Kolkata")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "Asia/Kolkata")
     private Timestamp createdOn;
     private String ipAddress;
     private String userName;
