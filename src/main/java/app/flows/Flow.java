@@ -1,8 +1,7 @@
-package app.Flow;
+package app.flows;
 
-import app.dto.ElementDTO;
-import app.entities.Element;
-import app.service.ElementService;
+import app.dtos.ElementDTO;
+import app.services.ElementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,9 +1,9 @@
-package app.service;
+package app.services;
 
-import app.dto.ElementDTO;
+import app.dtos.ElementDTO;
 import app.entities.Element;
 import app.repositories.ElementsRepository;
-import app.util.Converter;
+import app.utilities.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
