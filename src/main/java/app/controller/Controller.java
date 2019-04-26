@@ -1,7 +1,7 @@
 package app.controller;
 
-import app.entities.Element;
-import app.repositories.ElementsRepository;
+import app.Flow.Flow;
+import app.dto.ElementDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,21 +13,22 @@ import java.util.List;
 @RestController
 public class Controller {
 
-    private final ElementsRepository elementsRepository;
+    private final Flow flow;
 
     @Autowired
-    public Controller(ElementsRepository elementsRepository) {
-        this.elementsRepository = elementsRepository;
+    public Controller(Flow flow) {
+        this.flow = flow;
     }
 
+
     @GetMapping()
-    public List<Element> getElements() {
-        return elementsRepository.findAll();
+    public List<ElementDTO> findAllElements() {
+        return flow.findAllElements();
     }
 
     @PostMapping()
-    public Element postElement(@RequestBody Element element) {
-        return elementsRepository.save(element);
+    public ElementDTO createElement(@RequestBody ElementDTO elementDTO) {
+        return flow.createElement(elementDTO);
     }
 
 }
