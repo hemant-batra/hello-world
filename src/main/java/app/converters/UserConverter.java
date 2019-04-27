@@ -5,9 +5,11 @@ import app.entities.User;
 import app.repositories.UsersRepository;
 import app.utilities.EntityConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserConverter extends EntityConverter<String, User, UserDTO> {
 
     private final UsersRepository usersRepository;
