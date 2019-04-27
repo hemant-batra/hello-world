@@ -4,6 +4,7 @@ import app.converters.ElementConverter;
 import app.converters.UserConverter;
 import app.dtos.ElementDTO;
 import app.dtos.UserDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+@Slf4j
 @Component
 public class Flow {
 
@@ -26,6 +28,7 @@ public class Flow {
     }
 
     public UserDTO getUserByIpAddress(String ipAddress) {
+        log.info("Ip Address = " + ipAddress);
         List<UserDTO> users = userConverter.findAllByIpAddress(ipAddress);
         if(users.isEmpty())
             return null;
