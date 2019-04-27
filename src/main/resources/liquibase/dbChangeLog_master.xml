@@ -20,7 +20,7 @@
             <column name="user_name" type="VARCHAR(50)"/>
         </createTable>
     </changeSet>
-    <changeSet author="liquibase" id="add primary key to elements">
+    <changeSet author="liquibase" id="add primary key to users">
         <addPrimaryKey columnNames="user_id" constraintName="elements_pk" tableName="elements"/>
     </changeSet>
 </databaseChangeLog>
