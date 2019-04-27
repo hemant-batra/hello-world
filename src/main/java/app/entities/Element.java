@@ -14,9 +14,8 @@ import java.sql.Timestamp;
 public class Element implements Serializable {
 
     @Id
-    private String id;
+    private String elementId;
+    private String userId;
     private Timestamp createdOn;
-    private String ipAddress;
-    private String userName;
     private String content;
 }
