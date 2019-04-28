@@ -1,4 +1,4 @@
-package app.entities;
+package app.jpa.entities;
 
 import lombok.Data;
 

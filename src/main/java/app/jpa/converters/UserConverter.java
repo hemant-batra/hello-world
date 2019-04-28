@@ -1,8 +1,8 @@
-package app.converters;
+package app.jpa.converters;
 
-import app.dtos.UserDTO;
-import app.entities.User;
-import app.repositories.UsersRepository;
+import app.jpa.dtos.UserDTO;
+import app.jpa.entities.User;
+import app.jpa.repositories.UsersRepository;
 import app.utilities.EntityConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

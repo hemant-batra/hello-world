@@ -10,12 +10,16 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 public class EntityConverter<Id extends Serializable, Entity, DTO> {
@@ -35,71 +39,101 @@ public class EntityConverter<Id extends Serializable, Entity, DTO> {
         mapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
     }
 
+    // ________________________________ Entity to DTO ________________________________
     protected DTO toDTO(Entity entity) {
         return mapper.convertValue(entity, dtoClass);
     }
 
+    protected Stream<DTO> toDTOStream(List<Entity> entityList) {
+        return entityList.stream().map(this::toDTO);
+    }
+
+    protected List<DTO> toDTOList(List<Entity> entityList) {
+        return toDTOStream(entityList).collect(toList());
+    }
+
+    protected Collection<DTO> toDTOCollection(List<Entity> entityList, Supplier<Collection<DTO>> supplier) {
+        return toDTOStream(entityList).collect(toCollection(supplier));
+    }
+
+    // ________________________________ DTO to Entity ________________________________
     protected Entity toEntity(DTO dto) {
         return mapper.convertValue(dto, entityClass);
     }
 
-    protected List<DTO> toDTOs(List<Entity> entityList) {
-        return entityList
-                .stream()
-                .map(this::toDTO)
-                .collect(toList());
+    protected Stream<Entity> toEntityStream(List<DTO> dtoList) {
+        return dtoList.stream().map(this::toEntity);
     }
 
-    protected List<Entity> toEntities(List<DTO> dtoList) {
-        return dtoList
-                .stream()
-                .map(this::toEntity)
-                .collect(toList());
+    protected List<Entity> toEntityList(List<DTO> dtoList) {
+        return toEntityStream(dtoList).collect(toList());
     }
 
-    // GET
-    public List<DTO> get() {
-        return toDTOs(jpaRepository.findAll());
+    protected Collection<Entity> toEntityCollection(List<DTO> dtoList, Supplier<Collection<Entity>> supplier) {
+        return toEntityStream(dtoList).collect(toCollection(supplier));
     }
 
+    // ________________________________ Get DTO By Id________________________________
     public DTO get(Id id) {
         return toDTO(jpaRepository.findOne(id));
     }
 
-    public List<DTO> get(List<Id> ids) {
-        return toDTOs(jpaRepository.findAll(ids));
+    // ________________________________ Get All DTOs________________________________
+    public Stream<DTO> streamAll() {
+        return toDTOStream(jpaRepository.findAll());
     }
 
-    // POST
-    public DTO post(DTO dto, Consumer<DTO> idGenerator) {
-        idGenerator.accept(dto);
+    public List<DTO> listAll() {
+        return toDTOList(jpaRepository.findAll());
+    }
+
+    public Collection<DTO> collectAll(Supplier<Collection<DTO>> supplier) {
+        return toDTOCollection(jpaRepository.findAll(), supplier);
+    }
+
+    // ________________________________ Get All DTOs By Ids________________________________
+    public Stream<DTO> streamAll(List<Id> ids) {
+        return toDTOStream(jpaRepository.findAll(ids));
+    }
+
+    public List<DTO> listAll(List<Id> ids) {
+        return toDTOList(jpaRepository.findAll(ids));
+    }
+
+    public Collection<DTO> collectAll(List<Id> ids, Supplier<Collection<DTO>> supplier) {
+        return toDTOCollection(jpaRepository.findAll(ids), supplier);
+    }
+
+    // ________________________________ Post & Put________________________________
+    public DTO post(DTO dto) {
         return toDTO(jpaRepository.save(toEntity(dto)));
     }
 
-    public List<DTO> post(List<DTO> dtoList, Consumer<DTO> idGenerator) {
-        dtoList = dtoList.stream().peek(idGenerator).collect(toList());
-        return toDTOs(jpaRepository.save(toEntities(dtoList)));
+    public List<DTO> postAll(List<DTO> dtoList) {
+        return toDTOList(jpaRepository.save(toEntityList(dtoList)));
     }
 
-    // DELETE
+    // ________________________________ Post & Put with Consumer________________________________
+    public DTO post(DTO dto, Consumer<DTO> dtoMaker) {
+        dtoMaker.accept(dto);
+        return toDTO(jpaRepository.save(toEntity(dto)));
+    }
+
+    public List<DTO> postAll(List<DTO> dtoList, Consumer<DTO> dtoMaker) {
+        dtoList = dtoList.stream().peek(dtoMaker).collect(toList());
+        return toDTOList(jpaRepository.save(toEntityList(dtoList)));
+    }
+
+    // ________________________________ Delete ________________________________
     public void delete(Id id) {
         jpaRepository.delete(jpaRepository.findOne(id));
     }
 
-    public void delete(List<Id> ids) {
+    public void deleteAll(List<Id> ids) {
         jpaRepository.delete(jpaRepository.findAll(ids));
     }
 
-    // PUT
-    public DTO put(DTO dto) {
-        return toDTO(jpaRepository.save(toEntity(dto)));
-    }
-
-    public List<DTO> put(List<DTO> dtoList) {
-        return toDTOs(jpaRepository.save(toEntities(dtoList)));
-    }
-
-    // PATCH
+    // ________________________________ Patch ________________________________
     public DTO patch(DTO dto, Function<DTO, Id> idExtractor) {
         Entity existing = jpaRepository.findOne(idExtractor.apply(dto));
         try {
@@ -109,7 +143,7 @@ public class EntityConverter<Id extends Serializable, Entity, DTO> {
         return null;
     }
 
-    public List<DTO> patch(List<DTO> dtoList, Function<DTO, Id> idExtractor) {
+    public List<DTO> patchAll(List<DTO> dtoList, Function<DTO, Id> idExtractor) {
         return dtoList.stream().map(dto -> patch(dto, idExtractor)).filter(Objects::nonNull).collect(toList());
     }
 
