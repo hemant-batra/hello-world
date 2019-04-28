@@ -7,9 +7,6 @@ import app.utilities.EntityConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.util.List;
-
 @Service
 public class ElementConverter extends EntityConverter<String, Element, ElementDTO> {
 
@@ -21,7 +18,4 @@ public class ElementConverter extends EntityConverter<String, Element, ElementDT
         this.elementsRepository = elementsRepository;
     }
 
-    public List<ElementDTO> getAllByCreatedOnAfter(Timestamp createdOn) {
-        return toDTOs(elementsRepository.findAllByCreatedOnAfter(createdOn));
-    }
 }

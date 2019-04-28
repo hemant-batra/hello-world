@@ -7,8 +7,6 @@ import app.utilities.EntityConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class UserConverter extends EntityConverter<String, User, UserDTO> {
 
@@ -18,9 +16,5 @@ public class UserConverter extends EntityConverter<String, User, UserDTO> {
     public UserConverter(UsersRepository usersRepository) {
         super(usersRepository, User.class, UserDTO.class);
         this.usersRepository = usersRepository;
-    }
-
-    public List<UserDTO> findAllByIpAddress(String ipAddress) {
-        return toDTOs(usersRepository.findAllByIpAddress(ipAddress));
     }
 }

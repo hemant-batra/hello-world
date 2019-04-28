@@ -5,7 +5,7 @@
     <changeSet author="liquibase" id="create table elements">
         <createTable tableName="elements">
             <column name="element_id" type="VARCHAR(36)"><constraints nullable="false"/></column>
-            <column name="user_id" type="VARCHAR(36)"/>
+            <column name="ip_address" type="VARCHAR(20)"/>
             <column name="created_on" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
             <column name="content" type="VARCHAR(200)"/>
         </createTable>
@@ -15,12 +15,11 @@
     </changeSet>
     <changeSet author="liquibase" id="create table users">
         <createTable tableName="users">
-            <column name="user_id" type="VARCHAR(36)"><constraints nullable="false"/></column>
-            <column name="ip_address" type="VARCHAR(20)"/>
+            <column name="ip_address" type="VARCHAR(20)"><constraints nullable="false"/></column>
             <column name="user_name" type="VARCHAR(50)"/>
         </createTable>
     </changeSet>
     <changeSet author="liquibase" id="add primary key to users">
-        <addPrimaryKey columnNames="user_id" constraintName="users_pk" tableName="users"/>
+        <addPrimaryKey columnNames="ip_address" constraintName="users_pk" tableName="users"/>
     </changeSet>
 </databaseChangeLog>

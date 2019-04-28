@@ -11,7 +11,6 @@ import javax.persistence.Table;
 @Table(name = "users")
 public class User {
     @Id
-    private String userId;
     private String ipAddress;
     private String userName;
 }

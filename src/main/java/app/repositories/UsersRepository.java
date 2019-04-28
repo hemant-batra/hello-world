@@ -8,5 +8,4 @@ import java.util.List;
 
 @Repository
 public interface UsersRepository extends JpaRepository<User, String> {
-    List<User> findAllByIpAddress(String ipAddress);
 }

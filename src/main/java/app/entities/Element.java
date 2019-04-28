@@ -15,7 +15,7 @@ public class Element implements Serializable {
 
     @Id
     private String elementId;
-    private String userId;
+    private String ipAddress;
     private Timestamp createdOn;
     private String content;
 }
