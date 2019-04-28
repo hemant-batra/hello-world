@@ -4,9 +4,18 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 public class EntityConverter<Id extends Serializable, Entity, DTO> {
@@ -48,32 +57,70 @@ public class EntityConverter<Id extends Serializable, Entity, DTO> {
                 .collect(toList());
     }
 
-    public List<DTO> findAll() {
+    // GET
+    public List<DTO> get() {
         return toDTOs(jpaRepository.findAll());
     }
 
-    public DTO findOne(Id id) {
+    public DTO get(Id id) {
         return toDTO(jpaRepository.findOne(id));
     }
 
-    public List<DTO> findAll(List<Id> ids) {
+    public List<DTO> get(List<Id> ids) {
         return toDTOs(jpaRepository.findAll(ids));
     }
 
-    public DTO save(DTO dto) {
+    // POST
+    public DTO post(DTO dto, Consumer<DTO> idGenerator) {
+        idGenerator.accept(dto);
         return toDTO(jpaRepository.save(toEntity(dto)));
     }
 
-    public List<DTO> save(List<DTO> dtoList) {
+    public List<DTO> post(List<DTO> dtoList, Consumer<DTO> idGenerator) {
+        dtoList = dtoList.stream().peek(idGenerator).collect(toList());
         return toDTOs(jpaRepository.save(toEntities(dtoList)));
     }
 
-    public void delete(DTO dto) {
-        jpaRepository.delete(toEntity(dto));
+    // DELETE
+    public void delete(Id id) {
+        jpaRepository.delete(jpaRepository.findOne(id));
     }
 
-    public void delete(List<DTO> dtoList) {
-        jpaRepository.delete(toEntities(dtoList));
+    public void delete(List<Id> ids) {
+        jpaRepository.delete(jpaRepository.findAll(ids));
     }
 
+    // PUT
+    public DTO put(DTO dto) {
+        return toDTO(jpaRepository.save(toEntity(dto)));
+    }
+
+    public List<DTO> put(List<DTO> dtoList) {
+        return toDTOs(jpaRepository.save(toEntities(dtoList)));
+    }
+
+    // PATCH
+    public DTO patch(DTO dto, Function<DTO, Id> idExtractor) {
+        Entity existing = jpaRepository.findOne(idExtractor.apply(dto));
+        try {
+            copyNonNulls(existing, toEntity(dto));
+            return toDTO(jpaRepository.save(existing));
+        } catch(Exception ignored) {}
+        return null;
+    }
+
+    public List<DTO> patch(List<DTO> dtoList, Function<DTO, Id> idExtractor) {
+        return dtoList.stream().map(dto -> patch(dto, idExtractor)).filter(Objects::nonNull).collect(toList());
+    }
+
+    private void copyNonNulls(Object destination, Object source) throws IntrospectionException, IllegalArgumentException,
+                                IllegalAccessException, InvocationTargetException {
+        BeanInfo beanInfo = Introspector.getBeanInfo(source.getClass());
+        PropertyDescriptor[] pdList = beanInfo.getPropertyDescriptors();
+        for (PropertyDescriptor pd : pdList) {
+            Object value = pd.getReadMethod().invoke(source);
+            if(nonNull(value))
+                pd.getWriteMethod().invoke(destination, value);
+        }
+    }
 }

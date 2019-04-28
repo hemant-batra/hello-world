@@ -6,6 +6,7 @@ import app.flows.Flow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -19,29 +20,28 @@ public class Controller {
     }
 
 
-    @GetMapping("user/ip-address/{ipAddress}")
-    public UserDTO getUserByIpAddress(@PathVariable("ipAddress") String ipAddress) {
+    @GetMapping("user")
+    public UserDTO getUserByIpAddress(@RequestParam("ipAddress") String ipAddress) {
         return flow.getUserByIpAddress(ipAddress);
     }
 
     @PostMapping("user")
-    public void createUser(@RequestBody UserDTO userDTO) {
-        flow.createUser(userDTO);
+    public UserDTO createUser(@RequestBody UserDTO userDTO) {
+        return flow.createUser(userDTO);
     }
 
-    @GetMapping("elements/{userId}")
-    public List<ElementDTO> getElementsByUserId(@PathVariable("userId") String userId) {
-        return flow.getElementsByUserId(userId);
+    @GetMapping("elements")
+    public List<ElementDTO> getElements() {
+        return flow.getElements();
+    }
+
+    @GetMapping("elements")
+    public List<ElementDTO> getElementsByCreatedOnAfter(@RequestParam("createdOn") Timestamp createdOn) {
+        return flow.getElementsByCreatedOnAfter(createdOn);
     }
 
     @PostMapping("element")
     public ElementDTO createElement(@RequestBody ElementDTO elementDTO) {
         return flow.createElement(elementDTO);
     }
-
-    @DeleteMapping("element/{elementId}")
-    public void deleteElement(@PathVariable("elementId") String elementId) {
-        flow.deleteElement(elementId);
-    }
-
 }

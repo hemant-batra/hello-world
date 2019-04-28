@@ -8,11 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
-
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 @Slf4j
 @Component
@@ -28,7 +26,6 @@ public class Flow {
     }
 
     public UserDTO getUserByIpAddress(String ipAddress) {
-        log.info("Ip Address = " + ipAddress);
         List<UserDTO> users = userConverter.findAllByIpAddress(ipAddress);
         if(users.isEmpty())
             return null;
@@ -37,37 +34,19 @@ public class Flow {
         return users.get(0);
     }
 
-    public void createUser(UserDTO userDTO) {
-        String id = userDTO.getUserId();
-        if(nonNull(id)) {
-            UserDTO existing = userConverter.findOne(userDTO.getUserId());
-            if(nonNull(existing))
-                throw new RuntimeException("User with this id already exists");
-        }
-        userDTO.setUserId(UUID.randomUUID().toString());
-        userConverter.save(userDTO);
+    public UserDTO createUser(UserDTO userDTO) {
+        return userConverter.post(userDTO, dto -> dto.setUserId(UUID.randomUUID().toString()));
     }
 
-    public List<ElementDTO> getElementsByUserId(String userId) {
-        return elementConverter.findAllByUserId(userId);
+    public List<ElementDTO> getElements() {
+        return elementConverter.get();
+    }
+
+    public List<ElementDTO> getElementsByCreatedOnAfter(Timestamp createdOn) {
+        return elementConverter.getAllByCreatedOnAfter(createdOn);
     }
 
     public ElementDTO createElement(ElementDTO elementDTO) {
-        String id = elementDTO.getElementId();
-        if(nonNull(id)) {
-            ElementDTO existing = elementConverter.findOne(elementDTO.getElementId());
-            if(nonNull(existing))
-                throw new RuntimeException("Element with this id already exists");
-        }
-        elementDTO.setElementId(UUID.randomUUID().toString());
-        return elementConverter.save(elementDTO);
+        return elementConverter.post(elementDTO, dto -> dto.setElementId(UUID.randomUUID().toString()));
     }
-
-    public void deleteElement(String elementId) {
-        ElementDTO existing = elementConverter.findOne(elementId);
-        if(isNull(existing))
-            throw new RuntimeException("Element with this id does not exist");
-        elementConverter.delete(existing);
-    }
-
 }
