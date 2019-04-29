@@ -6,7 +6,6 @@ import app.jpa.dtos.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -30,8 +29,8 @@ public class Controller {
     }
 
     @GetMapping("elements")
-    public List<ElementDTO> getAllElements(@RequestParam("createdOn") Timestamp createdOn) {
-        return flow.getAllElements(createdOn);
+    public List<ElementDTO> getAllElements(@RequestParam("createdOn") String strCreatedOn) {
+        return flow.getAllElements(strCreatedOn);
     }
 
     @PostMapping("element")

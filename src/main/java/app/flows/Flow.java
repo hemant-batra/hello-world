@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static app.utilities.DateTimeUtil.toTimestamp;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
@@ -38,10 +39,10 @@ public class Flow {
         userConverter.save(userDTO);
     }
 
-    public List<ElementDTO> getAllElements(Timestamp createdOn) {
-        Stream<ElementDTO> elementStream = isNull(createdOn) ?
+    public List<ElementDTO> getAllElements(String strCreatedOn) {
+        Stream<ElementDTO> elementStream = isNull(strCreatedOn) ?
                 elementConverter.streamAll() :
-                elementConverter.findAllByCreatedOnAfter(createdOn);
+                elementConverter.findAllByCreatedOnAfter(toTimestamp(strCreatedOn));
         return elementStream
                 .sorted(comparing(ElementDTO::getCreatedOn))
                 .collect(toList());
