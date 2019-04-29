@@ -1,5 +1,6 @@
 package app.controller;
 
+import app.dtos.CreateElementDTO;
 import app.flows.Flow;
 import app.jpa.dtos.ElementDTO;
 import app.jpa.dtos.UserDTO;
@@ -34,7 +35,7 @@ public class Controller {
     }
 
     @PostMapping("element")
-    public void createElement(@RequestBody ElementDTO elementDTO) {
-        flow.createElement(elementDTO);
+    public void createElement(@RequestBody CreateElementDTO createElementDTO) {
+        flow.createElement(createElementDTO);
     }
 }

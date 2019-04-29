@@ -1,5 +1,6 @@
 package app.flows;
 
+import app.dtos.CreateElementDTO;
 import app.jpa.converters.ElementConverter;
 import app.jpa.converters.UserConverter;
 import app.jpa.dtos.ElementDTO;
@@ -48,10 +49,12 @@ public class Flow {
                 .collect(toList());
     }
 
-    public void createElement(ElementDTO elementDTO) {
-        elementConverter.save(elementDTO, dto -> {
-            dto.setElementId(UUID.randomUUID().toString());
-            dto.setCreatedOn(new Timestamp(System.currentTimeMillis()));
+    public void createElement(CreateElementDTO createElementDTO) {
+        elementConverter.save(new ElementDTO(), elementDTO -> {
+            elementDTO.setElementId(UUID.randomUUID().toString());
+            elementDTO.setCreatedOn(new Timestamp(System.currentTimeMillis()));
+            elementDTO.setIpAddress(createElementDTO.getIpAddress());
+            elementDTO.setContent(createElementDTO.getContent());
         });
     }
 
