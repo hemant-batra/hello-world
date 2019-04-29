@@ -19,8 +19,8 @@ public class Controller {
         this.flow = flow;
     }
 
-    @GetMapping("user/{ipAddress}")
-    public UserDTO getUser(@PathVariable("ipAddress") String ipAddress) {
+    @GetMapping("user")
+    public UserDTO getUser(@RequestParam("ipAddress") String ipAddress) {
         return flow.getUser(ipAddress);
     }
 
