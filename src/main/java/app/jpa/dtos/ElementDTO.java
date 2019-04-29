@@ -12,6 +12,6 @@ public class ElementDTO {
     private Timestamp createdOn;
     private String content;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd MMM yyyy HH:mm:ss zzz", timezone = "Asia/Kolkata")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MMM-yyyy hh:mm:ss a", timezone = "Asia/Kolkata")
     private Timestamp displayCreatedOn;
 }

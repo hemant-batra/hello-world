@@ -44,6 +44,7 @@ public class Flow {
                 elementConverter.streamAll() :
                 elementConverter.findAllByCreatedOnAfter(toTimestamp(strCreatedOn));
         return elementStream
+                .peek(elementDTO -> elementDTO.setDisplayCreatedOn(elementDTO.getCreatedOn()))
                 .sorted(comparing(ElementDTO::getCreatedOn))
                 .collect(toList());
     }
