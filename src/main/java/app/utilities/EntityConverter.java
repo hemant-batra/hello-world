@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -78,6 +79,23 @@ public class EntityConverter<Id extends Serializable, Entity, DTO> {
         return toDTO(jpaRepository.findOne(id));
     }
 
+    public Optional<DTO> getOptional(Id id) {
+        return Optional.ofNullable(get(id));
+    }
+
+    // ________________________________ Get DTOs By Ids________________________________
+    public Stream<DTO> streamByIds(List<Id> ids) {
+        return toDTOStream(jpaRepository.findAll(ids));
+    }
+
+    public List<DTO> listByIds(List<Id> ids) {
+        return toDTOList(jpaRepository.findAll(ids));
+    }
+
+    public Collection<DTO> collectByIds(List<Id> ids, Supplier<Collection<DTO>> supplier) {
+        return toDTOCollection(jpaRepository.findAll(ids), supplier);
+    }
+
     // ________________________________ Get All DTOs________________________________
     public Stream<DTO> streamAll() {
         return toDTOStream(jpaRepository.findAll());
@@ -91,35 +109,22 @@ public class EntityConverter<Id extends Serializable, Entity, DTO> {
         return toDTOCollection(jpaRepository.findAll(), supplier);
     }
 
-    // ________________________________ Get All DTOs By Ids________________________________
-    public Stream<DTO> streamAll(List<Id> ids) {
-        return toDTOStream(jpaRepository.findAll(ids));
-    }
-
-    public List<DTO> listAll(List<Id> ids) {
-        return toDTOList(jpaRepository.findAll(ids));
-    }
-
-    public Collection<DTO> collectAll(List<Id> ids, Supplier<Collection<DTO>> supplier) {
-        return toDTOCollection(jpaRepository.findAll(ids), supplier);
-    }
-
     // ________________________________ Post & Put________________________________
-    public DTO post(DTO dto) {
+    public DTO save(DTO dto) {
         return toDTO(jpaRepository.save(toEntity(dto)));
     }
 
-    public List<DTO> postAll(List<DTO> dtoList) {
+    public List<DTO> saveAll(List<DTO> dtoList) {
         return toDTOList(jpaRepository.save(toEntityList(dtoList)));
     }
 
     // ________________________________ Post & Put with Consumer________________________________
-    public DTO post(DTO dto, Consumer<DTO> dtoMaker) {
+    public DTO save(DTO dto, Consumer<DTO> dtoMaker) {
         dtoMaker.accept(dto);
         return toDTO(jpaRepository.save(toEntity(dto)));
     }
 
-    public List<DTO> postAll(List<DTO> dtoList, Consumer<DTO> dtoMaker) {
+    public List<DTO> saveAll(List<DTO> dtoList, Consumer<DTO> dtoMaker) {
         dtoList = dtoList.stream().peek(dtoMaker).collect(toList());
         return toDTOList(jpaRepository.save(toEntityList(dtoList)));
     }

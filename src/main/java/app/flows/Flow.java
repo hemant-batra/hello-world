@@ -1,6 +1,5 @@
 package app.flows;
 
-import app.dtos.CreateElementDTO;
 import app.jpa.converters.ElementConverter;
 import app.jpa.converters.UserConverter;
 import app.jpa.dtos.ElementDTO;
@@ -31,6 +30,14 @@ public class Flow {
         this.elementConverter = elementConverter;
     }
 
+    public UserDTO getUser(String ipAddress) {
+        return userConverter.get(ipAddress);
+    }
+
+    public void createUser(UserDTO userDTO) {
+        userConverter.save(userDTO);
+    }
+
     public List<ElementDTO> getAllElements(Timestamp createdOn) {
         Stream<ElementDTO> elementStream = isNull(createdOn) ?
                 elementConverter.streamAll() :
@@ -40,17 +47,11 @@ public class Flow {
                 .collect(toList());
     }
 
-    public void createElement(CreateElementDTO createElementDTO) {
-        userConverter.post(new UserDTO(), userDTO -> {
-            userDTO.setIpAddress(createElementDTO.getIpAddress());
-            userDTO.setUserName(createElementDTO.getUserName());
-        });
-
-        elementConverter.post(new ElementDTO(), elementDTO -> {
-            elementDTO.setElementId(UUID.randomUUID().toString());
-            elementDTO.setCreatedOn(new Timestamp(System.currentTimeMillis()));
-            elementDTO.setIpAddress(createElementDTO.getIpAddress());
-            elementDTO.setContent(createElementDTO.getContent());
+    public void createElement(ElementDTO elementDTO) {
+        elementConverter.save(elementDTO, dto -> {
+            dto.setElementId(UUID.randomUUID().toString());
+            dto.setCreatedOn(new Timestamp(System.currentTimeMillis()));
         });
     }
+
 }
