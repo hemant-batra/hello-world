@@ -29,7 +29,7 @@ public class Controller {
     }
 
     @GetMapping("elements")
-    public List<ElementDTO> getAllElements(@RequestParam("createdOn") String strCreatedOn) {
+    public List<ElementDTO> getAllElements(@RequestParam(name = "createdOn", required = false) String strCreatedOn) {
         return flow.getAllElements(strCreatedOn);
     }
 
