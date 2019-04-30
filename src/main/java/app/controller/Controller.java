@@ -1,11 +1,12 @@
 package app.controller;
 
 import app.flows.Flow;
-import app.jpa.dtos.ElementDTO;
-import app.jpa.dtos.UserDTO;
+import app.jpa.entities.Element;
+import app.jpa.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -19,22 +20,22 @@ public class Controller {
     }
 
     @GetMapping("user")
-    public UserDTO getUser(@RequestParam("ipAddress") String ipAddress) {
+    public User getUser(@RequestParam("ipAddress") String ipAddress) {
         return flow.getUser(ipAddress);
     }
 
     @PostMapping("user")
-    public void createUser(@RequestBody UserDTO userDTO) {
-        flow.createUser(userDTO);
+    public void createUser(@RequestBody User user) {
+        flow.createUser(user);
     }
 
     @GetMapping("elements")
-    public List<ElementDTO> getAllElements(@RequestParam(name = "createdOn", required = false) String strCreatedOn) {
-        return flow.getAllElements(strCreatedOn);
+    public List<Element> getAllElements(@RequestParam(name = "createdOn", required = false) Timestamp createdOn) {
+        return flow.getAllElements(createdOn);
     }
 
     @PostMapping("element")
-    public void createElement(@RequestBody ElementDTO elementDTO) {
-        flow.createElement(elementDTO);
+    public void createElement(@RequestBody Element element) {
+        flow.createElement(element);
     }
 }

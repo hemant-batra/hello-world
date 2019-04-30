@@ -40,7 +40,7 @@ public class EntityConverter<Id extends Serializable, Entity, DTO> {
         mapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
     }
 
-    // ________________________________ Entity to DTO ________________________________
+    // ______________________________ Entity to DTO __________________________________
     protected DTO toDTO(Entity entity) {
         return mapper.convertValue(entity, dtoClass);
     }
@@ -57,7 +57,7 @@ public class EntityConverter<Id extends Serializable, Entity, DTO> {
         return toDTOStream(entityList).collect(toCollection(supplier));
     }
 
-    // ________________________________ DTO to Entity ________________________________
+    // ______________________________ DTO to Entity __________________________________
     protected Entity toEntity(DTO dto) {
         return mapper.convertValue(dto, entityClass);
     }
@@ -74,7 +74,7 @@ public class EntityConverter<Id extends Serializable, Entity, DTO> {
         return toEntityStream(dtoList).collect(toCollection(supplier));
     }
 
-    // ________________________________ Get DTO By Id________________________________
+    // ______________________________ Get DTO By Id___________________________________
     public DTO get(Id id) {
         return toDTO(jpaRepository.findOne(id));
     }
@@ -83,7 +83,7 @@ public class EntityConverter<Id extends Serializable, Entity, DTO> {
         return Optional.ofNullable(get(id));
     }
 
-    // ________________________________ Get DTOs By Ids________________________________
+    // ______________________________ Get DTOs By Ids_________________________________
     public Stream<DTO> streamByIds(List<Id> ids) {
         return toDTOStream(jpaRepository.findAll(ids));
     }
@@ -96,7 +96,7 @@ public class EntityConverter<Id extends Serializable, Entity, DTO> {
         return toDTOCollection(jpaRepository.findAll(ids), supplier);
     }
 
-    // ________________________________ Get All DTOs________________________________
+    // ________________________________ Get All DTOs__________________________________
     public Stream<DTO> streamAll() {
         return toDTOStream(jpaRepository.findAll());
     }
@@ -109,7 +109,7 @@ public class EntityConverter<Id extends Serializable, Entity, DTO> {
         return toDTOCollection(jpaRepository.findAll(), supplier);
     }
 
-    // ________________________________ Post & Put________________________________
+    // ________________________________ Post & Put____________________________________
     public DTO save(DTO dto) {
         return toDTO(jpaRepository.save(toEntity(dto)));
     }
@@ -118,7 +118,7 @@ public class EntityConverter<Id extends Serializable, Entity, DTO> {
         return toDTOList(jpaRepository.save(toEntityList(dtoList)));
     }
 
-    // ________________________________ Post & Put with Consumer________________________________
+    // ___________________________ Post & Put with Consumer___________________________
     public DTO save(DTO dto, Consumer<DTO> dtoMaker) {
         dtoMaker.accept(dto);
         return toDTO(jpaRepository.save(toEntity(dto)));
@@ -129,7 +129,7 @@ public class EntityConverter<Id extends Serializable, Entity, DTO> {
         return toDTOList(jpaRepository.save(toEntityList(dtoList)));
     }
 
-    // ________________________________ Delete ________________________________
+    // ___________________________________ Delete ____________________________________
     public void delete(Id id) {
         jpaRepository.delete(jpaRepository.findOne(id));
     }
@@ -138,7 +138,7 @@ public class EntityConverter<Id extends Serializable, Entity, DTO> {
         jpaRepository.delete(jpaRepository.findAll(ids));
     }
 
-    // ________________________________ Patch ________________________________
+    // ____________________________________ Patch ____________________________________
     public DTO patch(DTO dto, Function<DTO, Id> idExtractor) {
         Entity existing = jpaRepository.findOne(idExtractor.apply(dto));
         try {
