@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class Controller {
 
     private final Flow flow;
