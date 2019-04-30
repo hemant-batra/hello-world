@@ -2,6 +2,12 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="liquibase" id="truncate all tables">
+        <sql splitStatements="true">
+            TRUNCATE TABLE ELEMENTS;
+            TRUNCATE TABLE USERS;
+        </sql>
+    </changeSet>
     <changeSet author="liquibase" id="create table elements">
         <createTable tableName="elements">
             <column name="element_id" type="VARCHAR(36)"><constraints nullable="false"/></column>

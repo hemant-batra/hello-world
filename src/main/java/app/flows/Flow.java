@@ -44,6 +44,7 @@ public class Flow {
         return elements
                 .stream()
                 .sorted(comparing(Element::getCreatedOn))
+                .peek(element -> element.setUserName(usersRepository.findOne(element.getIpAddress()).getUserName()))
                 .collect(toList());
     }
 
