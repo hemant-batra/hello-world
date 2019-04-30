@@ -17,7 +17,7 @@ public class Element implements Serializable {
     @Id
     private String elementId;
     private String ipAddress;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "Asia/Kolkata")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private Timestamp createdOn;
     private String content;
 }
