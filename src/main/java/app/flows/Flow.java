@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
 import static java.util.Objects.isNull;
@@ -39,10 +38,11 @@ public class Flow {
     }
 
     public List<Element> getAllElements(Timestamp createdOn) {
-        Stream<Element> elementStream = isNull(createdOn) ?
-                elementsRepository.streamAll() :
-                elementsRepository.streamAllByCreatedOnAfter(createdOn);
-        return elementStream
+        List<Element> elements = isNull(createdOn) ?
+                elementsRepository.findAll() :
+                elementsRepository.findAllByCreatedOnAfter(createdOn);
+        return elements
+                .stream()
                 .sorted(comparing(Element::getCreatedOn))
                 .collect(toList());
     }
