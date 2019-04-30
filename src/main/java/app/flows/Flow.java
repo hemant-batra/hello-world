@@ -38,10 +38,10 @@ public class Flow {
     }
 
     public List<Element> getAllElements(Timestamp createdOn) {
-        log.info(String.valueOf(createdOn));
         List<Element> elements = isNull(createdOn) ?
                 elementsRepository.findAll() :
                 elementsRepository.findAllByCreatedOnAfter(createdOn);
+        elements.stream().map(Element::getContent).forEach(log::info);
         return elements
                 .stream()
                 .sorted(comparing(Element::getCreatedOn))
