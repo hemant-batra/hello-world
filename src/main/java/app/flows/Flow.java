@@ -1,9 +1,10 @@
 package app.flows;
 
-import app.jpa.entities.Element;
-import app.jpa.entities.User;
-import app.jpa.repositories.ElementsRepository;
-import app.jpa.repositories.UsersRepository;
+import app.dtos.ElementDTO;
+import app.entities.Element;
+import app.entities.User;
+import app.repositories.ElementsRepository;
+import app.repositories.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,15 +38,23 @@ public class Flow {
         usersRepository.save(user);
     }
 
-    public List<Element> getAllElements(Timestamp createdOn) {
+    public List<ElementDTO> getAllElements(Timestamp createdOn) {
         List<Element> elements = isNull(createdOn) ?
                 elementsRepository.findAll() :
                 elementsRepository.findAllByCreatedOnAfter(createdOn);
         return elements
                 .stream()
                 .sorted(comparing(Element::getCreatedOn))
-                .peek(element -> element.setUserName(usersRepository.findOne(element.getIpAddress()).getUserName()))
+                .map(this::convert)
                 .collect(toList());
+    }
+
+    private ElementDTO convert(Element element) {
+        ElementDTO elementDTO = new ElementDTO();
+        elementDTO.setCreatedOn(element.getCreatedOn());
+        elementDTO.setUserName(usersRepository.findOne(element.getIpAddress()).getUserName());
+        elementDTO.setContent(element.getContent());
+        return elementDTO;
     }
 
     public void createElement(Element element) {

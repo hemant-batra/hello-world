@@ -1,8 +1,9 @@
-package app.controller;
+package app.controllers;
 
+import app.dtos.ElementDTO;
+import app.entities.Element;
+import app.entities.User;
 import app.flows.Flow;
-import app.jpa.entities.Element;
-import app.jpa.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class Controller {
     }
 
     @GetMapping("elements")
-    public List<Element> getAllElements(@RequestParam(name = "createdOn", required = false) Timestamp createdOn) {
+    public List<ElementDTO> getAllElements(@RequestParam(name = "createdOn", required = false) Timestamp createdOn) {
         return flow.getAllElements(createdOn);
     }
 
